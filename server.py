@@ -38,7 +38,7 @@ def load_saved_artifacts():
     json_url = os.path.join(SITE_ROOT, "artifacts", "columns.json")
     print(json_url)
     with open(json_url,'r') as f:
-        __data_columns=json.load(open(json_url))['data_columns']
+        __data_columns=json.load(open(f))['data_columns']
         __locations = __data_columns[3:]
     
     # with open('./artifacts/columns.json', 'rb') as f:
