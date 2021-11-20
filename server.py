@@ -34,7 +34,7 @@ def load_saved_artifacts():
     global  __data_columns
     global __locations
 
-    with open('./artifacts/columns.json', 'rb') as f:
+    with open('./artifacts/{columns.json}', 'rb') as f:
         __data_columns = json.load(f)['data_columns']
         __locations = __data_columns[3:]  # first 3 columns are sqft, bath, bhk
 
@@ -58,7 +58,7 @@ def hello_world():
 @app.route('/get_location_names',methods=['GET'])
 def get_location_names():
     response = jsonify({
-        'locations': __data_columns
+        'locations': __locations
     })
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
