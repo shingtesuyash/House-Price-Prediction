@@ -1,11 +1,54 @@
 from flask import Flask, app,request,jsonify
-import util
 import os
+import pickle
+import json
+import numpy as np
+
+__locations = None
+__data_columns = None
+__model = None
+
 from flask_cors import CORS
 app= Flask(__name__)
 cors=CORS()
 
 os.environ.get('PORT', 3000)
+
+def get_estimated_price(location,sqft,bhk,bath):
+    try:
+        loc_index = __data_columns.index(location.lower())
+    except:
+        loc_index = -1
+
+    x = np.zeros(len(__data_columns))
+    x[0] = sqft
+    x[1] = bath
+    x[2] = bhk
+    if loc_index>=0:
+        x[loc_index] = 1
+
+    return round(__model.predict([x])[0],2)
+
+def load_saved_artifacts():
+    print("loading saved artifacts...start")
+    global  __data_columns
+    global __locations
+
+    with open('./artifacts/columns.json', 'r') as f:
+        __data_columns = json.load(f)['data_columns']
+        __locations = __data_columns[3:]  # first 3 columns are sqft, bath, bhk
+
+    global __model
+    if __model is None:
+        with open('./artifacts/banglore_home_prices_model.pickle', 'rb') as f:
+            __model = pickle.load(f)
+    print("loading saved artifacts...done")
+
+def get_location_names():
+    return __locations
+
+def get_data_columns():
+    return __data_columns
 
 @app.route('/')
 def hello_world():
@@ -16,7 +59,7 @@ def hello_world():
 @app.route('/get_location_names',methods=['GET'])
 def get_location_names():
     response = jsonify({
-        'locations': util.get_location_names()
+        'locations': get_location_names()
     })
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
@@ -33,7 +76,7 @@ def predict_home_price():
     print("data is",data['location'],data['total_sqft'])
 
     response = jsonify({
-        'estimated_price': util.get_estimated_price(location,total_sqft,bhk,bath)
+        'estimated_price': get_estimated_price(location,total_sqft,bhk,bath)
     })
     response.headers.add('Access-Control-Allow-Origin', '*')
 
@@ -42,6 +85,6 @@ def predict_home_price():
 
 if __name__=="__main__":
     print("Starting Python Flask Server for House Price prediction")
-    util.load_saved_artifacts()
+    load_saved_artifacts()
     cors.init_app(app)
     app.run(port=os.environ.get('PORT', 3000))
