@@ -44,8 +44,7 @@ def load_saved_artifacts():
             __model = pickle.load(f)
     print("loading saved artifacts...done")
 
-def get_location_names():
-    return __locations
+
 
 def get_data_columns():
     return __data_columns
@@ -59,7 +58,7 @@ def hello_world():
 @app.route('/get_location_names',methods=['GET'])
 def get_location_names():
     response = jsonify({
-        'locations': get_location_names()
+        'locations': __locations
     })
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
