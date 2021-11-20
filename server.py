@@ -58,7 +58,7 @@ def hello_world():
 @app.route('/get_location_names',methods=['GET'])
 def get_location_names():
     response = jsonify({
-        'locations': __locations
+        'locations': __data_columns
     })
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
