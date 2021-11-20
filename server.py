@@ -1,15 +1,16 @@
-from flask import Flask, app,request,jsonify
+from flask import Flask, app,request,jsonify,url_for
 import os
 import pickle
 import json
 import numpy as np
+
 
 __locations = None
 __data_columns = None
 __model = None
 
 from flask_cors import CORS
-app= Flask(__name__,static_url_path='/static')
+app= Flask(__name__,static_folder="./static")
 cors=CORS()
 
 os.environ.get('PORT', 3000)
@@ -41,6 +42,9 @@ def load_saved_artifacts():
     #     __data_columns=json.load(f)['data_columns']
     #     __locations = __data_columns[3:]
     # print(__locations)
+
+    
+
     with open('./static/artifacts/columns.json', 'rb') as f:
         __data_columns = json.load(f)['data_columns']
         __locations = __data_columns[3:]  # first 3 columns are sqft, bath, bhk
