@@ -7,6 +7,12 @@ cors=CORS()
 
 os.environ.get('PORT', 3000)
 
+@app.route('/')
+def hello_world():
+    json_file = {}
+    json_file['query'] = 'hello_world'
+    return jsonify(json_file)
+
 @app.route('/get_location_names',methods=['GET'])
 def get_location_names():
     response = jsonify({
