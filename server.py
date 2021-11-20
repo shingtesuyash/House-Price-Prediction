@@ -9,7 +9,7 @@ __data_columns = None
 __model = None
 
 from flask_cors import CORS
-app= Flask(__name__)
+app= Flask(__name__,static_url_path='/static')
 cors=CORS()
 
 os.environ.get('PORT', 3000)
@@ -35,15 +35,15 @@ def load_saved_artifacts():
     global __locations
 
     # SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
-    json_url = os.path.join(app.static_folder, "artifacts", "columns.json")
-    print(json_url)
-    with open(json_url,'r') as f:
-        __data_columns=json.load(f)['data_columns']
-        __locations = __data_columns[3:]
-    print(__locations)
-    # with open('./artifacts/columns.json', 'rb') as f:
-    #     __data_columns = json.load(f)['data_columns']
-    #     __locations = __data_columns[3:]  # first 3 columns are sqft, bath, bhk
+    # json_url = os.path.join(app.static_folder, "artifacts", "columns.json")
+    # print(json_url)
+    # with open(json_url,'r') as f:
+    #     __data_columns=json.load(f)['data_columns']
+    #     __locations = __data_columns[3:]
+    # print(__locations)
+    with open('./static/artifacts/columns.json', 'rb') as f:
+        __data_columns = json.load(f)['data_columns']
+        __locations = __data_columns[3:]  # first 3 columns are sqft, bath, bhk
 
     global __model
     if __model is None:
