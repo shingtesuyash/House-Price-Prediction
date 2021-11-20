@@ -53,7 +53,7 @@ def get_data_columns():
 def hello_world():
     json_file = {}
     json_file['query'] = 'hello_world'
-    return jsonify(json_file)
+    return jsonify(json_file,__model)
 
 @app.route('/get_location_names',methods=['GET'])
 def get_location_names():
