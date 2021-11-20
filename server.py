@@ -34,7 +34,7 @@ def load_saved_artifacts():
     global  __data_columns
     global __locations
 
-    with open('./artifacts/columns.json', 'r') as f:
+    with open('./artifacts/columns.json', 'rb') as f:
         __data_columns = json.load(f)['data_columns']
         __locations = __data_columns[3:]  # first 3 columns are sqft, bath, bhk
 
@@ -53,7 +53,7 @@ def get_data_columns():
 def hello_world():
     json_file = {}
     json_file['query'] = 'hello_world'
-    return jsonify(json_file,__model)
+    return jsonify(json_file)
 
 @app.route('/get_location_names',methods=['GET'])
 def get_location_names():
