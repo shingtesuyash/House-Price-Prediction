@@ -10,7 +10,7 @@ __data_columns = None
 __model = None
 
 from flask_cors import CORS
-app= Flask(__name__)
+app= Flask(__name__,static_url_path='/server/static')
 cors=CORS()
 
 os.environ.get('PORT', 3000)
@@ -51,10 +51,15 @@ def load_saved_artifacts():
     #     __locations = __data_columns[3:]
     # print(__locations)
 
-    App_route=os.path.dirname(__file__)
-    json_url= os.path.join(App_route,"static","./artifacts/columns.json")
-    print(json_url)
-    with open(json_url,'r') as f:
+    # App_route=os.path.dirname(__file__)
+    # json_url= os.path.join(App_route,"static","./artifacts/columns.json")
+    # print(json_url)
+    # with open(json_url,'r') as f:
+    #     __data_columns=json.load(f)['data_columns']
+    #     __locations = __data_columns[3:]
+    # print(__locations)
+
+    with open('./static/artifacts/columns.json') as f:
         __data_columns=json.load(f)['data_columns']
         __locations = __data_columns[3:]
     print(__locations)
