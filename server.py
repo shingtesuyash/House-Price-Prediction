@@ -43,10 +43,21 @@ def load_saved_artifacts():
     #     __locations = __data_columns[3:]
     # print(__locations)
 
-    with app.open_resource('static/artifacts/columns.json') as f:
+    App_route=os.path.dirname(os.path.abspath(__file__))
+    json_url= os.path.join(App_route,"./static/artifacts/columns.json")
+    print(json_url)
+    with open(json_url,'r') as f:
         __data_columns=json.load(f)['data_columns']
         __locations = __data_columns[3:]
     print(__locations)
+
+
+    # with app.open_resource('static/artifacts/columns.json') as f:
+    #     __data_columns=json.load(f)['data_columns']
+    #     __locations = __data_columns[3:]
+    # print(__locations)
+
+    
 
     # json_data=open(url_for('static',filename="artifacts/columns.js"))
     # __data_columns=json.load(json_data)['data_columns']
