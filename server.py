@@ -3,105 +3,27 @@ import os
 import pickle
 import json
 import numpy as np
+import util
 
 
-__locations = None
-__data_columns = None
-__model = None
 
 from flask_cors import CORS
-app= Flask(__name__,static_url_path='/server/static')
+app= Flask(__name__, static_folder='./build', static_url_path='/')
 cors=CORS()
 
 os.environ.get('PORT', 3000)
 
-def get_estimated_price(location,sqft,bhk,bath):
-    try:
-        loc_index = __data_columns.index(location.lower())
-    except:
-        loc_index = -1
-
-    x = np.zeros(len(__data_columns))
-    x[0] = sqft
-    x[1] = bath
-    x[2] = bhk
-    if loc_index>=0:
-        x[loc_index] = 1
-
-    return round(__model.predict([x])[0],2)
-
-def load_saved_artifacts():
-    print("loading saved artifacts...start")
-    global  __data_columns
-    global __locations
-
-    # SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
-    # json_url = os.path.join(app.static_folder, "artifacts", "columns.json")
-    # print(json_url)
-    # with open(json_url,'r') as f:
-    #     __data_columns=json.load(f)['data_columns']
-    #     __locations = __data_columns[3:]
-    # print(__locations)
-
-    # App_route=os.path.dirname(os.path.abspath(__file__))
-    # json_url= os.path.join(App_route,"./static/artifacts/columns.json")
-    # print(json_url)
-    # with open(json_url,'r') as f:
-    #     __data_columns=json.load(f)['data_columns']
-    #     __locations = __data_columns[3:]
-    # print(__locations)
-
-    # App_route=os.path.dirname(__file__)
-    # json_url= os.path.join(App_route,"static","./artifacts/columns.json")
-    # print(json_url)
-    # with open(json_url,'r') as f:
-    #     __data_columns=json.load(f)['data_columns']
-    #     __locations = __data_columns[3:]
-    # print(__locations)
-
-    with open('./static/artifacts/columns.json') as f:
-        __data_columns=json.load(f)['data_columns']
-        __locations = __data_columns[3:]
-    print(__locations)
-
-
-    # with app.open_resource('static/artifacts/columns.json') as f:
-    #     __data_columns=json.load(f)['data_columns']
-    #     __locations = __data_columns[3:]
-    # print(__locations)
-
-    
-
-    # json_data=open(url_for('static',filename="artifacts/columns.js"))
-    # __data_columns=json.load(json_data)['data_columns']
-    # __locations=__data_columns[3:]
-    # print(__locations)
-
-    # with open('./static/artifacts/columns.json', 'rb') as f:
-    #     __data_columns = json.load(f)['data_columns']
-    #     __locations = __data_columns[3:]  # first 3 columns are sqft, bath, bhk
-
-    global __model
-    if __model is None:
-        with open('./static/artifacts/banglore_home_prices_model.pickle', 'rb') as f:
-            __model = pickle.load(f)
-    print("loading saved artifacts...done")
-
-
-
-def get_data_columns():
-    return __data_columns
-
 @app.route('/')
-def hello_world():
-    json_file = {}
-    json_file['query'] = 'hello_world'
-    return jsonify(json_file)
+def index():
+    return app.send_static_file('index.html')
+
+
+
 
 @app.route('/get_location_names',methods=['GET'])
 def get_location_names():
     response = jsonify({
-        'locations': __locations
+        'locations': util.get_location_names()
     })
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
@@ -118,7 +40,7 @@ def predict_home_price():
     print("data is",data['location'],data['total_sqft'])
 
     response = jsonify({
-        'estimated_price': get_estimated_price(location,total_sqft,bhk,bath)
+        'estimated_price': util.get_estimated_price(location,total_sqft,bhk,bath)
     })
     response.headers.add('Access-Control-Allow-Origin', '*')
 
@@ -127,6 +49,6 @@ def predict_home_price():
 
 if __name__=="__main__":
     print("Starting Python Flask Server for House Price prediction")
-    load_saved_artifacts()
+    util.load_saved_artifacts()
     cors.init_app(app)
     app.run(port=os.environ.get('PORT', 3000))

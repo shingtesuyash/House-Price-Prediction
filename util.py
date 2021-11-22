@@ -9,6 +9,8 @@ __model = None
 
 def get_estimated_price(location,sqft,bhk,bath):
     try:
+        if __data_columns is None:
+            load_saved_artifacts()
         loc_index = __data_columns.index(location.lower())
     except:
         loc_index = -1
@@ -38,6 +40,8 @@ def load_saved_artifacts():
     print("loading saved artifacts...done")
 
 def get_location_names():
+    if __locations is None:
+        load_saved_artifacts()
     return __locations
 
 def get_data_columns():
